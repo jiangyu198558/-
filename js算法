@@ -61,5 +61,47 @@ function bubbleSort3(arr){
   console.timeEnd('2.改进后冒泡排序耗时');
   return arr;
 }
-var arr=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
-console.log(bubbleSort3(arr));//[2, 3, 4, 5, 15, 19, 26, 27, 36, 38, 44, 46, 47, 48, 50]
+var arr3=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+console.log(bubbleSort3(arr3));//[2, 3, 4, 5, 15, 19, 26, 27, 36, 38, 44, 46, 47, 48, 50]
+
+2、选择排序
+function selectionSort(arr){
+  var len = arr.length;
+  var minIndex, temp;
+  console.time("选择排序耗时");
+  for(var i=0; i<len-1; i++){
+    minIndex = i;
+    for(var j=i+1; j<len; j++){
+      if(arr[j] < arr[minIndex]){
+        minIndex = j;
+      }
+    }
+    temp = arr[i];
+    arr[i] = arr[minIndex];
+    arr[minIndex] = temp;
+  }
+  console.timeEnd("选择排序耗时");
+  return arr;
+}
+var arr4 = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
+console.log(selectionSort(arr4));
+
+// 插入排序
+function insertionSort(array){
+  if(Object.prototype.toString.call(array).slice(8, -1) === 'Array'){
+    console.time('插入排序耗时');
+    for(var i=1; i<array.length; i++){
+      var key = array[i];
+      var j = i - 1;
+      while(j>=0 && array[j] > key){
+        arr[j+1] = array[j];
+        j--;
+      }
+      array[j+1] = key;
+    }
+    console.timeEnd("插入排序耗时");
+    return array;
+  }else{
+    return 'array is not an Array!';
+  }
+}

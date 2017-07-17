@@ -1,4 +1,5 @@
-1、冒泡排序
+var arr = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
+//1、冒泡排序
 function bubbleSort(arr){
   var len = arr.length;
   for(var i=0; i<len; i++){
@@ -12,7 +13,6 @@ function bubbleSort(arr){
   }
   return arr;
 }
-var arr = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
 console.log(bubbleSort(arr));
 
 // 改进冒泡排序 设置一个标志性变量pos，用于记录每趟排序中最后一次进行交换的位置
@@ -34,8 +34,7 @@ function bubbleSort2(arr){
   console.timeEnd('改进后冒泡排序耗时');
   return arr;
 }
-var arr2 = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
-console.log(bubbleSort2(arr2));
+console.log(bubbleSort2(arr));
 
 function bubbleSort3(arr){
   var low = 0;
@@ -64,7 +63,7 @@ function bubbleSort3(arr){
 var arr3=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
 console.log(bubbleSort3(arr3));//[2, 3, 4, 5, 15, 19, 26, 27, 36, 38, 44, 46, 47, 48, 50]
 
-2、选择排序
+//2、选择排序
 function selectionSort(arr){
   var len = arr.length;
   var minIndex, temp;
@@ -83,10 +82,9 @@ function selectionSort(arr){
   console.timeEnd("选择排序耗时");
   return arr;
 }
-var arr4 = [3, 44, 38, 5, 47, 15, 36, 26, 27, 2, 46, 4, 19, 50, 48];
-console.log(selectionSort(arr4));
+console.log(selectionSort(arr));
 
-// 插入排序
+//3、插入排序
 function insertionSort(array){
   if(Object.prototype.toString.call(array).slice(8, -1) === 'Array'){
     console.time('插入排序耗时');
@@ -105,3 +103,4 @@ function insertionSort(array){
     return 'array is not an Array!';
   }
 }
+console.log(insertionSort(arr));

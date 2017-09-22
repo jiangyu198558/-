@@ -1,0 +1,91 @@
+Express + Node.js 实现拦截器
+在nodejs+express中，采用nodejs后端路由控制用户登录后，为了加强前端的安全性控制，阻止用户通过在浏览器地址栏中输入地址访问后台接口，在app.js中需要加入拦截器进行拦截：
+/*************************导入需要的包************************************************/
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');//1、引入cookie模块，拦截器中req.cookies.userCookies是依赖于该模块的；
+var bodyParser = require('body-parser');
+var ejs=require("ejs");
+/**************************设置nodejs路由对应的文件***************************/
+var index = require('./routes/index');
+var ccap=require('./routes/ccap');
+var jiami=require("./routes/jiami");
+var changePwd=require('./routes/changePwd');
+var login=require("./routes/login");
+var business=require("./routes/pay/business");
+var logs=require("./routes/pay/logs");
+var channel=require("./routes/pay/channel");
+var config=require("./routes/pay/config");
+/******************express配置模板视图**********************************/
+var app = express();
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'ejs');//设置视图为ejs引擎
+app.engine('html',ejs.__express); //设置视图为html引擎，ejs在页面仍然可用
+app.set('view engine', 'html');//设置视图为html引擎，ejs在页面仍然可用
+/******************引入要使用的模块**********************************************/
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());//2、引入cookie,h后可开始使用cookie模块获取客户端的cookies;
+app.use(express.static(path.join(__dirname, 'public')));
+/*************************登录拦截器**************************************/
+app.use(function (req, res, next) {
+    var url = req.originalUrl;//获取浏览器中当前访问的nodejs路由地址；
+    var userCookies=req.cookies.userCookies; //获取客户端存取的cookie,userCookies为cookie的名称；//有时拿不到cookie值，可能是因为拦截器位置放错，获取该cookie的方式是依赖于nodejs自带的cookie模块，//因此，获取cookie必须在1,2步之后才能使用，否则拿到的cookie就是undefined.
+    console.log("123"+url);
+    console.log("app获得cookie"+req.cookies.userCookies+"真假11111："+(req.cookies.userCookies==undefined));
+ 
+    if(url=='/login'&&!(userCookies==undefined)){ //通过判断控制用户登录后不能访问登录页面；
+        return res.redirect('/');//页面重定向；
+    }
+    next();
+});
+/*********************************node路由配置**********************************/
+app.use('/', index);
+app.use('/ccap',ccap);
+app.use("/app/jiami",jiami);
+app.use("/login",login);
+app.use("/changePwd",changePwd);
+app.use("/business",business);
+app.use("/logs",logs);
+app.use("/channel",channel);
+app.use("/config",config);
+/*******************************捕获异常***********************************/
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+ 
+// error handlers
+ 
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
+  });
+}
+ 
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
+});
+ 
+ 
+module.exports = app;

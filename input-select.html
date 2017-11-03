@@ -1,0 +1,288 @@
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>可输入搜索查找自动过滤的下拉列表</title>
+  <style>
+      
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  font-family: 'Microsoft YaHei','Lantinghei SC','Open Sans',Arial,'Hiragino Sans GB','STHeiti','WenQuanYi Micro Hei','SimSun',sans-serif;
+  letter-spacing: 1px;
+}
+
+h1 {
+  margin-top: 10vh;
+  font-size: 1.6rem;
+  max-width: 500px;
+  letter-spacing: 2px;
+  text-align: center;
+  line-height: 1.5;
+  text-transform: capitalize;
+  font-weight: 800;
+  color: #666;
+}
+h1 span {
+  color: #ff908b;
+}
+
+form {
+  position: relative;
+  width: 18rem;
+  margin-top: 8vh;
+}
+
+form input {
+  border-radius: 3px;
+  font-family: 'Microsoft YaHei','Lantinghei SC','Open Sans',Arial,'Hiragino Sans GB','STHeiti','WenQuanYi Micro Hei','SimSun',sans-serif;
+}
+
+.chosen-value,
+.value-list {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.chosen-value {
+  /*text-transform: uppercase;*/
+  font-weight: 600;
+  letter-spacing: 1px;
+  height: 3rem;
+  font-size: 1.1rem;
+  padding: 1rem;
+  color: #ff908b;
+  background-color: #fafcfd;
+  border: 1px solid #ff908b;
+  -webkit-transition: .3s ease-in-out;
+  transition: .3s ease-in-out;
+}
+.chosen-value::-webkit-input-placeholder {
+  color: #ff908b;
+}
+.chosen-value:hover {
+  color: #fff;
+  background-color: #ff908b;
+  cursor: pointer;
+}
+.chosen-value:hover::-webkit-input-placeholder {
+  color: #fff;
+}
+.chosen-value:focus, .chosen-value.open {
+  box-shadow: 0px 5px 8px 0px rgba(255,158,158,0.3);
+  outline: 0;
+  background-color: #ff908b;
+  color: #fff;
+}
+.chosen-value:focus::-webkit-input-placeholder, .chosen-value.open::-webkit-input-placeholder {
+  color: #fff;
+}
+
+.value-list {
+  background:#fff;
+  border-radius: 3px;
+  list-style: none;
+  margin-top: 3.6rem;
+  max-height: 0;
+  overflow: hidden;
+  -webkit-transition: .3s ease-in-out;
+  transition: .3s ease-in-out;
+}
+
+/*value-list婊氬姩鏉℃牱寮忓紑濮�*/
+.value-list::-webkit-scrollbar{background:#fff;width:6px;height:0px;border-radius:0 3px 3px 0;}
+/*.value-list::-webkit-scrollbar-button{background:#EEE;height:0px;}
+.value-list::-webkit-scrollbar-button:vertical:single-button:start{cursor:pointer;}
+.value-list::-webkit-scrollbar-button:vertical:single-button:end{cursor:pointer;}*/
+.value-list::-webkit-scrollbar-track{background:#eee;border-radius:6px;}
+.value-list::-webkit-scrollbar-track-piece{background:#eee;border-radius:6px;}
+.value-list::-webkit-scrollbar-thumb{background:#ff908b;border-radius:6px;}
+.value-list::-webkit-scrollbar-thumb:hover{background:#fba09c;border-radius:6px;}
+/*value-list婊氬姩鏉℃牱寮忕粨鏉�*/
+
+.value-list.open {
+  border: 1px solid #ff908b;
+  max-height: 280px;
+  overflow: auto;
+  box-shadow: 0px 5px 8px 0px rgba(255,158,158,0.3);
+}
+
+.value-list li {
+  position: relative;
+  height: 2.2rem;
+  background-color: #fafcfd;
+  padding: 1rem;
+  font-size: 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  cursor: pointer;
+  -webkit-transition: background-color .3s;
+  transition: background-color .3s;
+  opacity: 1;
+}
+.value-list li:hover {
+  color: #fff;
+  background-color: #ff908b;
+}
+.value-list li.closed {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0;
+  opacity: 0;
+}
+  </style>
+</head>
+<body>
+  <h1>可<span>输入搜索查找自动过滤</span>的下拉列表</h1>
+  <form>
+    <input class="chosen-value" type="text" value="" placeholder="输入内容自动过滤">
+    <ul class="value-list">
+      <li>阿里巴巴</li>
+      <li>阿里妈妈</li>
+      <li>阿里云</li>
+      <li>阿里速卖通</li>
+      <li>阿里旺旺</li>
+      <li>阿里小号</li>
+      <li>支付宝</li>
+      <li>天猫</li>
+      <li>淘宝</li>
+      <li>蚂蚁金服</li>
+      <li>蚂蚁花呗</li>
+      <li>蚂蚁借呗</li>
+      <li>蚂蚁聚宝</li>
+      <li>蚂蚁森林</li>
+      <li>余额宝</li>
+      <li>娱乐宝</li>
+      <li>芝麻信用</li>
+      <li>网商贷</li>
+      <li>网上银行</li>
+      <li>淘票票</li>
+      <li>共享单车</li>
+      <li>腾讯</li>
+      <li>腾讯云</li>
+      <li>腾讯理财</li>
+      <li>腾讯电脑管家</li>
+      <li>腾讯公益</li>
+      <li>腾讯视频</li>
+      <li>腾讯课堂</li>
+      <li>腾讯直播</li>
+      <li>腾讯QQ</li>
+      <li>腾讯游戏</li>
+      <li>QQ钱包</li>
+      <li>QQ红包</li>
+      <li>Q币</li>
+      <li>QQ安全中心</li>
+      <li>QQ同步助手</li>
+      <li>QQ邮箱</li>
+      <li>QQ企业邮箱</li>
+      <li>QQ音乐</li>
+      <li>微信</li>
+      <li>微信支付</li>
+      <li>微信红包</li>
+      <li>微信公众平台</li>
+      <li>企业号</li>
+      <li>服务号</li>
+      <li>订阅号</li>
+      <li>小程序</li>
+      <li>京东</li>
+      <li>美团</li>
+      <li>滴滴出行</li>
+    </ul>
+  </form>
+</body>
+<script>
+var inputField = document.querySelector('.chosen-value');
+var dropdown = document.querySelector('.value-list');
+var dropdownArray = [].concat(document.querySelectorAll('li'));
+var dropdownItems = dropdownArray[0];
+dropdown.classList.add('open');
+inputField.focus(); // Demo purposes only
+
+var valueArray = [];
+dropdownItems.forEach(function (item) {
+  valueArray.push(item.textContent);
+});
+
+var closeDropdown = function closeDropdown() {
+  dropdown.classList.remove('open');
+};
+
+inputField.addEventListener('input', function () {
+  dropdown.classList.add('open');
+  var inputValue = inputField.value.toLowerCase();
+  var valueSubstring = undefined;
+  if (inputValue.length > 0) {
+    for (var j = 0; j < valueArray.length; ++j) {
+      if (valueArray[j].indexOf(inputValue) < 0) {
+        dropdownItems[j].classList.add('closed');
+      } else {
+        dropdownItems[j].classList.remove('closed');
+      }
+      var closedNum = document.querySelectorAll('.closed').length;
+    }
+    if (closedNum == dropdownItems.length) {
+      dropdown.classList.remove('open');
+    }
+  } else {
+    for (var i = 0; i < dropdownItems.length; ++i) {
+      dropdownItems[i].classList.remove('closed');
+    }
+  }
+});
+
+dropdownItems.forEach(function (item) {
+  item.addEventListener('click', function (evt) {
+    inputField.value = item.textContent;
+    dropdownItems.forEach(function (dropdown) {
+      dropdown.classList.add('closed');
+    });
+  });
+});
+
+inputField.addEventListener('focus', function () {
+  inputField.placeholder = '输入内容自动过滤';
+  dropdown.classList.add('open');
+  dropdownItems.forEach(function (dropdown) {
+    dropdown.classList.remove('closed');
+  });
+});
+
+inputField.addEventListener('blur', function () {
+  inputField.placeholder = '点击可以选择内容';
+  dropdown.classList.remove('open');
+});
+
+document.addEventListener('click', function (evt) {
+  var isDropdown = dropdown.contains(evt.target);
+  var isInput = inputField.contains(evt.target);
+  if (!isDropdown && !isInput) {
+    dropdown.classList.remove('open');
+  }
+});
+</script>
+</html>

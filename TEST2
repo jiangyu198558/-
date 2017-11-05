@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>angular 可输入可选择的下拉框 demo</title>
+    <script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
+    <style>
+        .value-list {
+        }
+        .open {
+            overflow: auto;
+        }
+        .closed {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body ng-app="App" ng-controller="myCtrl">
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.js"></script>
+    <div>
+        <label for="">组别:</label>
+        <select ng-model="groupId" ng-change="getAdviserListByGroupId(groupId)">
+            <option value="-1" ng-selected="groupId == '-1'">请选择组别</option>
+            <option ng-repeat="x in groupsList" ng-selected="groupId == x.groupId" value="{{x.groupId}}">{{x.name}}</option>
+        </select>
+    </div>
+    <div>
+        <label for="">顾问：</label>
+        <!-- html5 方式 -->
+        <input class="selectAdviser" ng-model="nickname" type="text" list="searchInput" placeholder="请选择顾问" ng-change="searchAdviserByValue(nickname)" ng-focus="searchInputonFocus()" ng-blur="searchInputBlur()">
+        <datalist id="searchInput">
+            <option ng-repeat="x in advisersList" ng-selected="x.nickname.indexOf(nickname)>=0" id="{{x.id}}" value="{{x.nickname}}"/>
+        </datalist>
+        <label for="" ng-show="searchResult">无此数据</label>
+    </div>
+
+    <script>
+        var app = angular.module('App', []);
+        app.controller('myCtrl', ['$scope', function ($scope) {
+            $scope.groupsList = [
+                {
+                    "groupId":'100062',
+                    "name":"专-华北北京组1队",
+                    "sysUserList":[
+                        {
+                        "id":'34324289',
+                        "imtoken":"bade190f3c6f9a185b516f3e3798a00c",
+                        "imtokenId":"e956e33526f54d2f9587879ca9ea4b15",
+                        "nickname":"测试",
+                        "realname":"测试"
+                        },{
+                            "id":'34324320',
+                            "imtoken":"34d5b6a8ecd61480a0b1db5f3c3036c5",
+                            "imtokenId":"280febd876ec4dbc9fa503571be4c4a5",
+                            "nickname":"黑枣2",
+                            "realname":"黑枣2"
+                        },{
+                            "id":'34324321',
+                            "imtoken":"34d5b6a8ecd61480a0b1db5f3c3036c5",
+                            "imtokenId":"280febd876ec4dbc9fa503571be4c4a5",
+                            "nickname":"黑枣3",
+                            "realname":"黑枣3"
+                        }
+                    ],
+                    "upperGroupId":'100061'
+                },{
+                    "groupId":'100059',
+                    "name":"商-华北北京组2队",
+                    "sysUserList":[
+                        {
+                        "id":'34324287',
+                        "imtoken":"5dd5d40549d0dece6dcfdae91e6aa700",
+                        "imtokenId":"32b57ef1bb134c11967a219caf8a16f4",
+                        "nickname":"冻梨",
+                        "realname":"冻梨"
+                        },{
+                        "id":'34324318',
+                        "imtoken":"34d5b6a8ecd61480a0b1db5f3c3036c5",
+                        "imtokenId":"280febd876ec4dbc9fa503571be4c4a5",
+                        "nickname":"黑枣",
+                        "realname":"黑枣"
+                        },{
+                            "id":'34324319',
+                            "imtoken":"34d5b6a8ecd61480a0b1db5f3c3036c5",
+                            "imtokenId":"280febd876ec4dbc9fa503571be4c4a5",
+                            "nickname":"黑枣1",
+                            "realname":"黑枣1"
+                        }
+                    ],
+                    "upperGroupId":'100058'
+                }
+            ];
+            $scope.advisersList = [
+                {
+                    "id":'34324289',
+                    "imtoken":"bade190f3c6f9a185b516f3e3798a00c",
+                    "imtokenId":"e956e33526f54d2f9587879ca9ea4b15",
+                    "nickname":"测试",
+                    "realname":"测试"
+                },{
+                    "id":'34324287',
+                    "imtoken":"5dd5d40549d0dece6dcfdae91e6aa700",
+                    "imtokenId":"32b57ef1bb134c11967a219caf8a16f4",
+                    "nickname":"冻梨",
+                    "realname":"冻梨"
+                },{
+                    "id":'34324318',
+                    "imtoken":"34d5b6a8ecd61480a0b1db5f3c3036c5",
+                    "imtokenId":"280febd876ec4dbc9fa503571be4c4a5",
+                    "nickname":"黑枣",
+                    "realname":"黑枣"
+                },{
+                    "id":'34324319',
+                    "imtoken":"34d5b6a8ecd61480a0b1db5f3c3036c5",
+                    "imtokenId":"280febd876ec4dbc9fa503571be4c4a5",
+                    "nickname":"黑枣1",
+                    "realname":"黑枣1"
+                },{
+                    "id":'34324320',
+                    "imtoken":"34d5b6a8ecd61480a0b1db5f3c3036c5",
+                    "imtokenId":"280febd876ec4dbc9fa503571be4c4a5",
+                    "nickname":"黑枣2",
+                    "realname":"黑枣2"
+                },{
+                    "id":'34324321',
+                    "imtoken":"34d5b6a8ecd61480a0b1db5f3c3036c5",
+                    "imtokenId":"280febd876ec4dbc9fa503571be4c4a5",
+                    "nickname":"黑枣3",
+                    "realname":"黑枣3"
+                }
+            ];
+            $scope.groupId = '-1';
+            $scope.adviserId = '-1';
+            $scope.nickname = "";
+            $scope.searchResult = false;
+
+            $scope.getAdviserListByGroupId = function(groupId){
+                $scope.advisersList = [];
+                if (groupId == undefined || groupId == null || groupId == '-1') {
+                    // 遍历存放所有的顾问
+                    for (var i = 0; i < $scope.groupsList.length; i++) {
+                        for(var j=0; j < $scope.groupsList[i].sysUserList.length; j++){
+                            $scope.advisersList.push($scope.groupsList[i].sysUserList[j]);
+                        }
+                    }
+                    // 重新设置顾问选中默认
+                    $scope.adviserId = "-1";
+                    $scope.nickname = "";
+                    $scope.searchResult = false;
+                    return;
+                }
+                var isSome = false;
+                // 遍历存放相同组名下的顾问
+                for (var i = 0; i < $scope.groupsList.length; i++) {
+                    if($scope.groupsList[i].groupId == groupId){
+                        isSome = true;
+                        for(var j=0; j < $scope.groupsList[i].sysUserList.length; j++){
+                            $scope.advisersList.push($scope.groupsList[i].sysUserList[j]);
+                        }
+                    }
+                }
+                if(!isSome){
+                    // 重新设置顾问选中默认
+                    $scope.adviserId = "-1";
+                    $scope.nickname = "";
+                    $scope.searchResult = false;
+                }
+            };
+            $scope.getAdviserByName = function(adviserId){
+                if (adviserId == undefined || adviserId == null || adviserId == '-1') {
+                    // 重新设置顾问选中默认
+                    $scope.adviserId = "-1";
+                    $scope.nickname = "";
+                    $scope.searchResult = false;
+                    return;
+                }
+                for (var i = 0; i < $scope.groupsList.length; i++) {
+                    for(var j=0; j < $scope.groupsList[i].sysUserList.length; j++){
+                        if($scope.groupsList[i].sysUserList[j].id == adviserId && 
+                           $scope.groupId != $scope.groupsList[i].groupId){
+                            $scope.groupId = $scope.groupsList[i].groupId;
+                        }
+                    }
+                }
+            };
+            $scope.searchAdviserByValue = function(value){
+                $scope.searchResult = false;
+                var isFind = false;
+                var adviserId = "-1";
+                for (var i = 0; i < $scope.advisersList.length; i++) {
+                    if($scope.advisersList[i].nickname.indexOf(value)>=0){
+                        adviserId = $scope.advisersList[i].id;
+                        isFind = true;
+                        break;
+                    }
+                }
+                $scope.searchResult = !isFind;
+                for (var i = 0; i < $scope.groupsList.length; i++) {
+                    for(var j=0; j < $scope.groupsList[i].sysUserList.length; j++){
+                        if($scope.groupsList[i].sysUserList[j].id == adviserId && 
+                           $scope.groupId != $scope.groupsList[i].groupId){
+                            $scope.groupId = $scope.groupsList[i].groupId;
+                            break;
+                        }
+                    }
+                }
+            };
+        }]);
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+元旦之前下载一部Angular4的视频教程，正好有时间学了一下，可以来做前后分离的网站，也可以直接打包web app。
+
+1、安装Angular脚手架
+安装的时候选择全局安装
+npm install @angular/cli -g
+
+2、创建Angular项目
+运行命令
+ng new auction auction是项目文件夹名称
+
+3、启动项目开发环境
+在当前创建的项目目录下运行 如下命令
+ng serve或者npm run start,然后在浏览器中进入所提示的地址,默认是http://127.0.0.1:4200/
+
+4、安装第三方库 jQuery和Bootstrap
+npm install jquery --save-dev
+npm install bootstrap --save-dev
+
+npm install @types/jquery --save-dev
+npm instakll @types/bootstrap --save-dev
+安装这两个类型描述模块的目的是让TypeScript认识jQuery和Bootstrap的语法,进而能在ts文件中使用它们
+
+在.angular-cli.json文件内引入，如下配置
+"styles": [
+  "styles.css",
+  "../node_modules/bootstrap/dist/css/bootstrap.css"
+],
+"scripts": [
+  "../node_modules/jquery/dist/jquery.js",
+  "../node_modules/bootstrap/dist/js/bootstrap.js"
+]
+
+5、生成组件
+在项目根目录运行ng g component navbar 生成导航条组件，意思是angular generate component navbar,简单明了
+同理生成如下组件
+navbar	网页/APP导航条
+search	搜索区域
+product	商品详情
+stars	星级评分
+footer	底部信息
+carousel 轮播图区域
+至此项目搭建完成
+
+6、布局

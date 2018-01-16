@@ -42,3 +42,228 @@ carousel 轮播图区域
 至此项目搭建完成
 
 6、布局
+分析Angular的启动,app作为默认显示出来的component,肯定是在app.component.html中进行拼接了。
+打开我们的app.component.html,删除里面无用的内容,使用我们刚刚创建的component在里面拼图吧
+一般情况下,我们创建的组件所对应的css元素选择器(也就是标签),名字是app-componentName
+<app-navbar></app-navbar>
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <app-search></app-search>
+    </div>
+    <div class="col-md-9">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>
+
+组件编写
+导航条navbar 组件html内容如下
+<nav class="navbar navbar-inverse navbar-fixed">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="#" class="navbar-brand">在线竞拍</a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#">关于我们</a></li>
+                <li><a href="#">联系我们</a></li>
+                <li><a href="#">网站地图</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+底部信息footer
+<div class="container">
+    <hr>
+    <footer>
+        <div class="row">
+            <div class="col-lg-12">
+                <p>慕课网Angular入门实战2018</p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+css样式
+footer{
+  text-align: center;
+}
+
+商品搜索组件
+<form action="" name="searchForm" role="form">
+    <div class="form-group">
+        <label for="productTitle">商品名称：</label>
+        <input type="text" id="productTitle" placeholder="商品名称" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="productPrice">商品价格：</label>
+        <input type="number" id="productPrice" placeholder="商品价格" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="productCategory">商品类别：</label>
+        <select name="" id="productCategory" class="form-control"></select>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">搜索</button>
+    </div>
+</form>
+
+轮播图组件
+<div class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li class="active"></li>
+        <li></li>
+        <li></li>
+    </ol>
+    <div class="carousel-inner">
+        <div class="item active">
+            <img src="http://via.placeholder.com/800x300" alt="" class="slide-image">
+        </div>
+        <div class="item">
+            <img src="http://via.placeholder.com/800x300" alt="" class="slide-image">
+        </div>
+        <div class="item">
+            <img src="http://via.placeholder.com/800x300" alt="" class="slide-image">
+        </div>
+    </div>
+    <a href="javascript:$('.carousel').carousel('prev')" class="left carousel-control">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <a href="javascript:$('.carousel').carousel('next')" class="right carousel-control">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+</div>
+
+css样式
+.slide-image {
+    width: 100%;
+}
+
+商品列表组件
+首先,每一件商品都是一个对象,那么我门可以建立如下的模型:
+product.component.ts
+
+export class ProductComponent implements OnInit {
+  private imgUrl:string = "http://via.placeholder.com/320x150";
+  private products: Array<Product>;
+  constructor() { }
+
+  ngOnInit() {
+      this.products = [
+          new Product(1, "第一个商品", 1.99, 3.5, "这是第一个商品", ["电子产品", "硬件设备"]),
+          new Product(2, "第二个商品", 2.99, 3.5, "这是第一个商品", ["电子产品", "硬件设备"]),
+          new Product(3, "第三个商品", 3.99, 1.5, "这是第一个商品", ["电子产品", "硬件设备"]),
+          new Product(4, "第四个商品", 4.99, 5.5, "这是第一个商品", ["电子产品", "硬件设备"]),
+          new Product(5, "第五个商品", 5.99, 2.5, "这是第一个商品", ["电子产品", "硬件设备"]),
+          new Product(6, "第六个商品", 6.99, 6.5, "这是第一个商品", ["电子产品", "硬件设备"])
+      ];
+  }
+}
+
+export class Product {
+    constructor (
+        public id:number,
+        public title:string,
+        public price:number,
+        public rating:number,
+        public desc:string,
+        public categories:Array<string>
+    ){
+    }
+}
+
+html内容
+<div *ngFor="let product of products" class="col-md-4 col-sm-4 col-lg-4">
+    <div class="thumbnail">
+        <img [src]="imgUrl" alt="">
+        <div class="caption">
+            <h4 class="pull-right">{{product.price}}元</h4>
+            <h4><a [routerLink]="['/product', product.title]">{{product.title}}</a></h4>
+            <p>{{product.desc}}</p>
+        </div>
+        <div>
+            <app-stars [rating]="product.rating"></app-stars>
+        </div>
+    </div>
+</div>
+ngFor可以理解为在html中对一个数组进行循环遍历,同时循环这个html标签 Angular的数据绑定,也叫作数据驱动
+
+星级评分组件
+主要使用了 : *ngFor指令 class绑定 组件属性值输入@Input()
+import { Component, OnInit, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-stars',
+  templateUrl: './stars.component.html',
+  styleUrls: ['./stars.component.css']
+})
+export class StarsComponent implements OnInit {
+  
+  @Input()
+  private rating:number=0;
+
+  private stars:boolean[];
+
+  constructor() { }
+
+  ngOnInit() {
+      this.stars = [];
+      for(let i=1; i<=5; i++){
+          this.stars.push(i>this.rating);
+      }
+  }
+}
+
+html结构内容
+<p>
+    <span *ngFor="let star of stars" class="glyphicon glyphicon-star" [class.glyphicon-star-empty]="star"></span>
+    <span>{{rating}}星</span>
+</p>
+
+home组件
+<div class="row carousel-container">
+    <app-carousel></app-carousel>
+</div>
+<div class="row">
+    <app-product></app-product>
+</div>
+
+css样式
+.carousel-container {
+    margin-bottom: 40px;
+}
+
+商品详情组件
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-product-detail',
+  templateUrl: './product-detail.component.html',
+  styleUrls: ['./product-detail.component.css']
+})
+export class ProductDetailComponent implements OnInit {
+
+  productTitle:string;
+
+  constructor(private routeInfo:ActivatedRoute) { }
+
+  ngOnInit() {
+      this.productTitle = this.routeInfo.snapshot.params["prodTitle"];
+  }
+}
+
+<div>
+    <img src="http://via.placeholder.com/820x230" alt="">
+    <h4>{{productTitle}}</h4>
+</div>
+
+至此我们的基本组件已经实现了大部分,等进行下一章的学习。。。

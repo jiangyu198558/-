@@ -35,7 +35,9 @@ npm instakll @types/bootstrap --save-dev
 同理生成如下组件
 navbar	网页/APP导航条
 search	搜索区域
-product	商品详情
+product	商品列表
+productDetail 商品详情组件
+home  主页组件
 stars	星级评分
 footer	底部信息
 carousel 轮播图区域

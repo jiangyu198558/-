@@ -1,1 +1,242 @@
+路由
+简介
+首先需要先了解一个概念(SPA)，也就是单页面应用，一个页面只加载一次，不再刷新，只改变页面部分内容的应用。
+路由的作用就是为每一个视图分配一个唯一的URL，进入这个URL的时候，使应用跳到某个特定的视图状态。
+创建
+在创建项目的时候 ， 带上参数ng new RouterDemo --routing即可生成一个带路由文件的项目
 
+Angular路由常见对象
+
+名称	简介
+Routes	路由的配置，URL和组件之间的映射以及组件和组件插座RouterOutlet的映射关系
+RouterOutlet	在HTML中标记组件插入位置的占位符标签
+Router	在运行时执行路由的对象,navigate()和navigateByUrl()方法导航到指定的路由，使用依赖注入在控制器中获取
+RouterLink	在HTML中声明路由导航的标签属性
+ActivatedRoute	当前激活的路由对象，保存着当前路由的信息，如路由地址参数等，使用依赖注入在控制器中获取
+在项目中,路由文件通常为app-routing.module.ts
+
+配置
+打开路由文件，在routes:Routes对象中定义路由列表，其中，每一个路由至少包含两个参数，即path和component也就是URL和组件的映射关系
+
+注意：这里的path最好不要以/开头,否则会导致路由URL相对关系的混乱，Angular会自动帮你处理和子路由的关系，除非你明确知道你要做什么
+
+app-routing.module.ts源码
+
+import {NgModule} from '@angular/core'
+import {RouterModule, Routes} from '@angular/router';
+import {ProductDetailComponent} from './product-detail/product-detail.component';
+import {HomeComponent} from './home/home.component';
+
+const routes: Routes = [
+    {path: '', component: HomeComponent},
+    {path: 'product/:prodTitle', component: ProductDetailComponent}
+];
+
+@NgModule({
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule],
+    providers: []
+})
+
+export class AppRoutingModule {}
+app.module.ts修改部分
+
+imports: [
+        ...
+        AppRoutingModule
+        ...     
+    ],
+如上,最简单的路由便定义完毕啦
+
+插座
+所谓的插座,也就是在HTML中定义的路由对应的组件插入点
+
+使用<router-outlet></router-outlet>标签定义路由对应组件的插入位置(在该标签下面)
+
+路由链接
+使用<a [routerLink]=['/product']>商品详情</a>来定义一个路由导航链接
+
+注意这里的路由字符串需要加上/，后面我们会使用./等来区分路由和子路由
+路由的参数是一个数组而不是字符串，因为后面我们需要给路由传递参数
+
+然后我们就可以通过点击商品详情链接来显示product组件的内容了
+
+使用Router对象进行导航
+当你定义了一个事件进行跳转的时候，例如：
+
+<input type="button" (click)="toProductInfo()" />
+控制器代码
+
+export class AppComponent {
+    // 使用依赖注入拿到Router对象
+    constructor(private router:Router){}
+    // 事件绑定的方法，跳转
+    toProductInfo() {
+        this.router.navigate(['/product']);
+    }
+}
+即可实现用代码进行路由跳转
+
+默认路由
+当输入一个不存在的地址时，路由插座区域无法显示，并且会在控制台抛出异常，我们可以通过定义一个默认路由（例如404page）来避免错误发生
+
+首先，我们生成一个新的组件，运行ng g component code404
+
+生成404页面组件，简单编写内容之后，进入路由配置文件，添加一个新的路由配置信息
+
+...
+// 放在最后，当匹配不到的时候会选择此路由
+{path:'**',component:Code404Component}
+传递参数
+传递
+传递方式	形式	获取方式
+查询参数传递（GET方法）	<a [routerLink]=['/product'] [queryParams]="{id:1}"></a>=>/?id=1&name=jeffrey	ActivatedRoute.queryParams['id']
+在路由形式中定义参数	{path:'product/:id'}=><a [routerLink]=['/product/',1]></a>=>/product/1	ActivatedRoute.params['id']
+在路由配置中定义静态数据	{{path:'product/:id',component:ProductComponent,data:[{osProd:true}]}}	ActivatedRoute.data[0]['isProd']
+获取
+在constructor构造函数参数中使用依赖注入获取到ActivatedRoute存入routeInfo变量，在ngOnInit()取出参数
+
+直接取出（参数快照）
+this.productId=this.routeInfo.snapshort.queryParams['id']
+关联获取（参数订阅），在同翼哥组件之间路由的时候，由于ngOnInit()只会执行一次，导致参数不能刷新，这时候可以使用参数订阅来关联地获取到参数。（下面例子使用了箭头函数）
+this.routeInfo.params.subscribe((params:Params)=>this.productId=params['id'])
+重定向路由
+在访问一个特定路由时，重定向到另一个指定地址
+
+例如：
+
+{path: '', redirectTo:'/home',pathMatch:'full'},
+{path: 'home', component: HomeComponent},
+pathMatch指匹配策略
+
+当我们访问http://127.0.0.1:4200的时候，会自动跳转到http://127.0.0.1:4200/home
+
+子路由
+在一个路由的组件中展示其他组件的内容时，使用子路由来实现。
+
+其实更应该理解为“子组件”，也就是一个大的组件里的一部分，使用子路由来控制
+
+在主路由的routerOutlet显示主路由的组件内容时，根据子路由的变化，在主路由组件中子路由对应routerOutlet位置显示对应的子路由组件
+
+辅助路由
+形式：<router-outlet name="fuzhu"></router-outlet>
+
+{path:'xxx',component:XxxComponent,outlet:'fuzhu'}
+
+<a [routerLink]=['/home',{outlets:{fuzhu:'xxx'}}]>链接</a>或<a [routerLink]=[{outlets:{primary:'home',fuzhu:'xxx'}}]>链接</a>
+
+当点击链接的时候，主插座会显示home组件的内容，fuzhu插座会显示xxx路由匹配到的Xxx组件
+
+<a [routerLink]=[{outlets:{fuzhu:'xxx'}}]>链接</a>
+
+当点击链接的时候，主插座不变，fuzhu插座会显示xxx路由匹配到的Xxx组件
+
+<a [routerLink]=[{outlets:{fuzhu:null}}]>链接</a>
+
+当点击链接的时候，fuzhu插座不显示任何组件
+
+辅助路由允许你在同一个组件中定义多个插座，并定义每个插座显示的内容
+
+路由守卫
+简介
+所谓的路由守卫，也就是在满足一定条件的时候才允许进入或退出某一个路由。例如：
+
+在用户登录之前，不允许进入个人中心页面
+在某个表单的执行流程中，只有用户完成了上一步的任务之后，才能进入下一步的环节
+当用户没有执行保存操作而试图离开某一个路由的时候，阻止离开并进行提示
+路由守卫主要有三种类型：
+
+CanActivate 是否能进入到某个路由
+CanDeactivate 是否能离开某个路由
+Resolve 在路由激活之前获取数据
+现在，在路由对象里我们有多了一个新的参数：canActivate，该参数是数组格式，也就是说，一条路由允许接收多个守卫
+
+那么如何编写守卫呢？
+
+canActivate守卫
+在src目录中建立一个存放守卫的目录guard，新建路由守卫TypeScript文件，例如login.guard.ts，下面展示一个简单的Demo：
+
+（为了便于演示，不去做真正的登录服务，只是生成一个随机数来判断是否已经登录）
+
+import {canActivate} from "@angular/router";
+
+export class LoginGuard implements CanActivate {
+    canActivate(){
+        // 假设随机数小于0.5就代表已经登录
+        let isLogin:boolean = Math.random()<0.5;
+
+        if(!isLogin){
+            console.log("未登录");
+        }
+
+        return isLogin;
+    }
+}
+import {LoginGuard} from "./guard/login.guard";
+
+{path:'product/:id',component:ProductComponent,children:[......],canActivate:[LoginGuard]}
+
+...
+
+@NgModule({
+    imports:[...],
+    exports:[...],
+    providers:[LoginGuard]
+})
+这样，我们就是先了一个简单的路由守卫，当我们试图导航到这个路由的时候，会判断守卫返回的Boolean值，为True则通过。
+
+！还有这种操作？！在学Angular的时候顺便学了TypeScript~
+
+canDeactivate守卫
+同理，我们能很轻易地区是先一个canDeactivate守卫，区别在于canDeactivate守卫在是先接口的时候需要制定一个泛型（也就是需要保护的组件），算了，直接上代码吧：
+
+import {CanDeactivate} from "@angular/router";
+import {ProductComponent} from "../product/";
+
+export class UnsavedGuard implements CanDeactivate<ProductComponent>{
+    /*
+    需要实现一个方法
+    因为是需要离开，那么这里需要根据组件里的某些状态来判定
+    */
+    canDeactivate(component:ProductComponent){
+        return window.confirm("您还没保存，确定要离开吗？");
+    }
+}
+Resolve守卫
+Resolve守卫常用于解决数据预加载问题，如果使用路由中传递的参数，在进入某一个组件之后发出Http请求去获取所需要的数据，那么在刚进入这个组件的时候，所有使用插值表达式的位置都是空的，这样用户体验会很差。这时候可以使用Resolve守卫来解决，在进入之前先获取数据，进入之后立即使用并显示出来
+
+import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@angular/router';
+import {Product} from '../product/product.component';
+import {Observable} from 'rxjs/Observable';
+import {Injectable} from '@angular/core';
+
+@Injectable() // 装饰器，允许注入
+export class ProductResolve implements Resolve<Product> {
+  // 注入路由对象
+  constructor(private router: Router) {}
+
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Product | Observable<Product> | Promise<Product> {
+    const productId: number = route.params['id'];
+    if (productId === 1) {
+      return new Product(1, '小米6', 2999, 5, '很不错的手机', ['数码'])
+    } else {
+      this.router.navigate(['/home']);
+      return undefined;
+    }
+  }
+
+}
+在路由中我们有遇到了一个新的参数：resolve，接收一个数组（Resolve守卫）
+
+{path:'product/:id',component:ProductComponent,resolve:{product:ProductResolve}}
+同样需要在providers里声明一下。
+
+那么如何取出Resolve守卫传入的数据呢？
+
+同样可以使用参数订阅的方式：
+
+// routeInfo:ActivatedRoute
+this.routeInfo.data.subscribe((data:{product:Product})=>{
+    this.productId=data.product.id;
+});
+好了，路由的知识点就学习到这里。

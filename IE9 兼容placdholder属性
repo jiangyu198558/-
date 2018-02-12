@@ -1,0 +1,36 @@
+$(function(){
+    //IE9 兼容placdholder属性
+    function placeholderSupport() {
+        return 'placeholder' in document.createElement('input');
+    }
+    if(!placeholderSupport()){   // 判断浏览器是否支持 placeholder
+        $("[placeholder]").each(function(){
+            var _this = $(this);
+            _this.parent().css({"position": "relative"});
+            var left = _this.position().left+parseInt(_this.css("padding-left"))+parseInt(_this.css("margin-left"))+"px";
+            _this.after('<span class="placeholder" data-type="placeholder" style="position: absolute; top: 0px; left: ' + left + '">' + _this.attr("placeholder") + '</span>');
+            if(_this.val() != ""){
+                _this.parent().find("span.placeholder").hide();
+            }
+            else{
+                _this.parent().find("span.placeholder").show();
+            }
+        }).on("focus", function(){
+            $(this).parent().find("span.placeholder").hide();
+        }).on("blur", function(){
+            var _this = $(this);
+            if(_this.val() != ""){
+                _this.parent().find("span.placeholder").hide();
+            }
+            else{
+                _this.parent().find("span.placeholder").show();
+            }
+        });
+        // 点击表示placeholder的标签相当于触发input
+        $("span.placeholder").on("click", function(){
+            $(this).hide();
+            $(this).siblings("[placeholder]").trigger("click");
+            $(this).siblings("[placeholder]").trigger("focus");
+        });
+    }
+});
